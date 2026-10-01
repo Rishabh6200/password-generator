@@ -1,21 +1,23 @@
-import { Button } from "@/components/ui/button"
+import { useState } from 'react';
+import { Navbar } from './components/layout/Navbar';
+import { Header } from './components/layout/Header';
+import { SecurityNotice } from './components/layout/SecurityNotice';
+import { PasswordGenerator } from './features/password-generator';
 
-export function App() {
+export default function App() {
+  const [activeTool, setActiveTool] = useState<string>('password');
+
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
-      </div>
-    </div>
-  )
-}
+    <div className="min-h-screen w-full bg-background text-foreground flex flex-col font-sans antialiased selection:bg-primary/20 selection:text-primary">
+      <Navbar currentTool={activeTool} onSelectTool={setActiveTool} />
 
-export default App
+      <main className="flex-1 w-full container mx-auto px-4 sm:px-6 py-8 sm:py-10 flex flex-col gap-6">
+        <Header />
+
+        {activeTool === 'password' && <PasswordGenerator />}
+      </main>
+
+      <SecurityNotice />
+    </div>
+  );
+}

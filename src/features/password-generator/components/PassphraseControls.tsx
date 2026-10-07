@@ -2,6 +2,7 @@ import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
 import type { PassphraseOptions } from '../types';
 import { Button } from '@/components/ui/button';
 
@@ -22,6 +23,8 @@ export function PassphraseControls({ options, onChange }: PassphraseControlsProp
     onChange({ ...options, [key]: value });
   };
 
+  const isPresetSeparator = SEPARATORS.some((s) => s.value === options.separator);
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       {/* Word Count Slider */}
@@ -30,9 +33,25 @@ export function PassphraseControls({ options, onChange }: PassphraseControlsProp
           <Label htmlFor="word-count-slider" className="text-sm font-semibold text-foreground select-none cursor-pointer">
             Number of Words
           </Label>
-          <Badge variant="secondary" className="font-mono text-xs font-bold px-2 py-0.5 rounded-lg">
-            {options.wordCount} words
-          </Badge>
+          <div className="flex items-center gap-1.5">
+            <Input
+              type="number"
+              min={3}
+              max={10}
+              value={options.wordCount}
+              onChange={(e) => {
+                const val = parseInt(e.target.value, 10);
+                if (!isNaN(val)) {
+                  updateOption('wordCount', Math.max(3, Math.min(10, val)));
+                }
+              }}
+              aria-label="Number of words"
+              className="w-13 h-7 text-center font-mono text-xs font-bold px-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            />
+            <Badge variant="secondary" className="font-mono text-xs font-medium px-1.5 py-0.5 rounded-lg select-none">
+              words
+            </Badge>
+          </div>
         </div>
 
         <Slider
@@ -55,10 +74,10 @@ export function PassphraseControls({ options, onChange }: PassphraseControlsProp
           <span>Max: 10</span>
         </div>
 
-        {/* Separator Buttons */}
+        {/* Separator Buttons + Custom Input */}
         <div className="flex flex-col gap-1.5 pt-2">
           <span className="text-xs font-medium text-muted-foreground">Word Separator:</span>
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex items-center gap-1.5 flex-wrap">
             {SEPARATORS.map((sep) => (
               <Button
                 key={sep.value}
@@ -69,6 +88,17 @@ export function PassphraseControls({ options, onChange }: PassphraseControlsProp
                 {sep.label}
               </Button>
             ))}
+            <div className="flex items-center gap-1 ml-auto">
+              <span className="text-[11px] text-muted-foreground">Custom:</span>
+              <Input
+                type="text"
+                maxLength={3}
+                value={isPresetSeparator ? '' : options.separator}
+                onChange={(e) => updateOption('separator', e.target.value || '-')}
+                placeholder="e.g. @"
+                className="w-14 h-6 text-xs text-center font-mono px-1"
+              />
+            </div>
           </div>
         </div>
       </div>

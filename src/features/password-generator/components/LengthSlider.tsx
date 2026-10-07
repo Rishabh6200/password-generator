@@ -3,6 +3,7 @@ import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 interface LengthSliderProps {
    length: number;
@@ -20,9 +21,25 @@ export function LengthSlider({ length, onChange }: LengthSliderProps) {
                Password Length
             </Label>
 
-            <Badge variant="secondary" className="font-mono text-xs font-bold px-2 py-0.5 rounded-lg">
-               {length} chars
-            </Badge>
+            <div className="flex items-center gap-1.5">
+               <Input
+                  type="number"
+                  min={MIN_PASSWORD_LENGTH}
+                  max={MAX_PASSWORD_LENGTH}
+                  value={length}
+                  onChange={(e) => {
+                     const val = parseInt(e.target.value, 10);
+                     if (!isNaN(val)) {
+                        onChange(Math.max(MIN_PASSWORD_LENGTH, Math.min(MAX_PASSWORD_LENGTH, val)));
+                     }
+                  }}
+                  aria-label="Password length"
+                  className="w-13 h-7 text-center font-mono text-xs font-bold px-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+               />
+               <Badge variant="secondary" className="font-mono text-xs font-medium px-1.5 py-0.5 rounded-lg select-none">
+                  chars
+               </Badge>
+            </div>
          </div>
 
          <Slider

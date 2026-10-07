@@ -1,15 +1,11 @@
+import { Link, NavLink } from "react-router";
 import { KeyRound, Lock, Moon, ShieldCheck, Sun } from "lucide-react";
 import { useTheme } from "../theme-provider";
 import { Button } from "../ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { cn } from "cn";
 
-interface NavbarProps {
-   currentTool?: string;
-   onSelectTool?: (tool: string) => void;
-}
-
-export function Navbar({ currentTool = "password", onSelectTool }: NavbarProps) {
+export function Navbar() {
    const { theme, setTheme } = useTheme();
 
    const toggleTheme = () => {
@@ -17,61 +13,75 @@ export function Navbar({ currentTool = "password", onSelectTool }: NavbarProps) 
    };
 
    return (
-      <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/80 backdrop-blur-xl supports-backdrop-filter:bg-background/60 shadow-xs transition-all">
-         <div className="max-w-4xl mx-auto flex h-16 items-center justify-between px-4 sm:px-6">
-            <div className="flex items-center gap-3">
-               <div className="flex size-9.5 items-center justify-center rounded-xl bg-linear-to-br from-primary to-primary/80 text-primary-foreground shadow-sm shadow-primary/30 ring-1 ring-white/20">
-                  <KeyRound className="size-4.5" />
+      <header className="sticky top-3 sm:top-4 z-50 w-full px-4 sm:px-6">
+         <div className="max-w-4xl mx-auto flex h-14 items-center justify-between px-3 sm:px-4 rounded-2xl border border-border/70 bg-background/85 backdrop-blur-xl shadow-lg shadow-black/4 dark:shadow-black/40 ring-1 ring-border/40 transition-all">
+            {/* Clean Brand Mark */}
+            <Link
+               to="/"
+               className="flex items-center gap-2.5 group transition-opacity hover:opacity-90 select-none"
+            >
+               <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10 border border-primary/20 text-primary shadow-xs transition-transform group-hover:scale-105">
+                  <KeyRound className="size-4" />
                </div>
-               <div className="flex flex-col">
-                  <div className="flex items-center gap-2">
-                     <span className="font-heading text-base font-bold tracking-tight text-foreground">
-                        KeyCraft
-                     </span>
-                     <span className="inline-flex items-center rounded-full bg-primary/10 border border-primary/20 px-1.5 py-0.5 text-[10px] font-medium text-primary">
-                        v2.0
-                     </span>
-                  </div>
-                  <span className="hidden sm:inline text-[11px] text-muted-foreground font-medium">
-                     Zero-Knowledge Security Suite
-                  </span>
-               </div>
-            </div>
+               <span className="font-heading text-sm sm:text-base font-bold tracking-tight text-foreground">
+                  KeyCraft
+               </span>
+            </Link>
 
-            <nav className="hidden md:flex items-center gap-1 p-1 rounded-full bg-muted/60 border border-border/60">
-               <button
-                  type="button"
-                  onClick={() => onSelectTool?.("password")}
-                  className={cn(
-                     "flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer",
-                     currentTool === "password"
-                        ? "bg-background text-foreground font-semibold shadow-xs"
-                        : "text-muted-foreground hover:text-foreground"
-                  )}
+            {/* Modern Tool Navigation */}
+            <nav className="flex items-center gap-1">
+               <NavLink
+                  to="/"
+                  end
+                  className={({ isActive }) =>
+                     cn(
+                        "flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer select-none",
+                        isActive
+                           ? "bg-primary/10 text-primary font-semibold ring-1 ring-primary/25 shadow-xs"
+                           : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                     )
+                  }
                >
-                  <Lock className="size-3" />
-                  <span>Password Generator</span>
-               </button>
-               <a
-                  href="#security"
-                  className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium text-muted-foreground hover:text-foreground transition-all cursor-pointer"
+                  <Lock className="size-3.5" />
+                  <span>Generator</span>
+               </NavLink>
+               <NavLink
+                  to="/breach"
+                  className={({ isActive }) =>
+                     cn(
+                        "flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer select-none",
+                        isActive
+                           ? "bg-primary/10 text-primary font-semibold ring-1 ring-primary/25 shadow-xs"
+                           : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                     )
+                  }
                >
-                  <ShieldCheck className="size-3" />
-                  <span>Security</span>
-               </a>
+                  <ShieldCheck className="size-3.5" />
+                  <span>Breach Auditor</span>
+               </NavLink>
             </nav>
 
-            <div className="flex items-center gap-2.5">
+            {/* Right Tools: Security Status & Theme Toggle */}
+            <div className="flex items-center gap-2">
+               <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-medium select-none">
+                  <span className="relative flex size-1.5">
+                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+                     <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500"></span>
+                  </span>
+                  <span>Client-Side</span>
+               </div>
+
+               <div className="h-4 w-px bg-border/60 hidden sm:block" />
 
                <Tooltip>
                   <TooltipTrigger
                      render={
                         <Button
-                           variant="outline"
-                           size="icon"
+                           variant="ghost"
+                           size="icon-sm"
                            onClick={toggleTheme}
                            aria-label="Toggle theme"
-                           className="size-9 rounded-xl border-border/70 hover:bg-muted active:scale-95 transition-all cursor-pointer"
+                           className="size-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/80 cursor-pointer transition-all"
                         />
                      }
                   >
@@ -87,4 +97,3 @@ export function Navbar({ currentTool = "password", onSelectTool }: NavbarProps) 
       </header>
    );
 }
-

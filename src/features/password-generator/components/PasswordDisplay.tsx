@@ -1,5 +1,5 @@
 import { useState, type RefObject } from 'react';
-import { Check, CopyIcon, RotateCcw } from 'lucide-react';
+import { Check, CopyIcon, RotateCcw, ShieldAlert } from 'lucide-react';
 import { PasswordStrength } from './PasswordStrength';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -13,7 +13,8 @@ interface PasswordDisplayProps {
   passwordRef: RefObject<HTMLTextAreaElement | null>;
   onCopy: () => void;
   onRegenerate: () => void;
-  tabsActive: string
+  onAuditInBreach?: () => void;
+  tabsActive: string;
 }
 
 export function PasswordDisplay({
@@ -24,6 +25,7 @@ export function PasswordDisplay({
   passwordRef,
   onCopy,
   onRegenerate,
+  onAuditInBreach,
   tabsActive
 }: PasswordDisplayProps) {
   const [spinning, setSpinning] = useState(false);
@@ -58,8 +60,30 @@ export function PasswordDisplay({
           className="sr-only"
         />
 
-        {/* Grouped Actions: Regenerate + Primary Copy */}
+        {/* Grouped Actions: Audit + Regenerate + Primary Copy */}
         <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
+          {onAuditInBreach && (
+            <Tooltip>
+              <TooltipTrigger
+                render={
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={onAuditInBreach}
+                    disabled={!password}
+                    aria-label="Audit password in breach database"
+                    className="size-10 rounded-xl border-border/70 transition-all hover:bg-muted hover:text-primary active:scale-95 cursor-pointer"
+                  />
+                }
+              >
+                <ShieldAlert className="size-4 text-muted-foreground transition-colors hover:text-primary" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Audit in Breach Database</p>
+              </TooltipContent>
+            </Tooltip>
+          )}
+
           <Tooltip>
             <TooltipTrigger
               render={

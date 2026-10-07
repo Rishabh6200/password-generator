@@ -1,6 +1,7 @@
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import type { PinOptions } from '../types';
 import { Button } from '@/components/ui/button';
 
@@ -24,9 +25,25 @@ export function PinControls({ options, onChange }: PinControlsProps) {
           <Label htmlFor="pin-length-slider" className="text-sm font-semibold text-foreground select-none cursor-pointer">
             PIN Length
           </Label>
-          <Badge variant="secondary" className="font-mono text-xs font-bold px-2 py-0.5 rounded-lg">
-            {options.length} digits
-          </Badge>
+          <div className="flex items-center gap-1.5">
+            <Input
+              type="number"
+              min={4}
+              max={16}
+              value={options.length}
+              onChange={(e) => {
+                const val = parseInt(e.target.value, 10);
+                if (!isNaN(val)) {
+                  setLength(Math.max(4, Math.min(16, val)));
+                }
+              }}
+              aria-label="PIN length"
+              className="w-13 h-7 text-center font-mono text-xs font-bold px-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+            />
+            <Badge variant="secondary" className="font-mono text-xs font-medium px-1.5 py-0.5 rounded-lg select-none">
+              digits
+            </Badge>
+          </div>
         </div>
 
         <Slider

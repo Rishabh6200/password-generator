@@ -1,73 +1,105 @@
+import { lazy, Suspense } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router';
 import { RootLayout, type RouteMeta } from './components/layout/RootLayout';
-import { ToolsList } from './features/tools-list';
-import { PasswordGenerator } from './features/password-generator';
-import { BreachChecker } from './features/breach-checker';
+import { TOOLS } from './config/tools';
 
-export const router = createBrowserRouter([
+const ToolsList = lazy(() =>
+   import('./features/tools-list').then((m) => ({ default: m.ToolsList }))
+);
+const PasswordGenerator = lazy(() =>
+   import('./features/password-generator').then((m) => ({ default: m.PasswordGenerator }))
+);
+const BreachChecker = lazy(() =>
+   import('./features/breach-checker').then((m) => ({ default: m.BreachChecker }))
+);
+
+const PageLoader = () => (
+   <div className="flex items-center justify-center min-h-75 w-full animate-pulse text-xs text-muted-foreground">
+      Loading...
+   </div>
+);
+
+const getToolMeta = (id: string) => {
+   const tool = TOOLS.find((t) => t.id === id);
+   if (!tool) return { title: '', seoTitle: '', description: '' };
+   return {
+      title: tool.name,
+      seoTitle: tool.seoTitle,
+      description: tool.description,
+   };
+};
+
+export const router = createBrowserRouter(
+   [
+      {
+         path: '/',
+         Component: RootLayout,
+         children: [
+            {
+               index: true,
+               element: (
+                  <Suspense fallback={<PageLoader />}>
+                     <ToolsList />
+                  </Suspense>
+               ),
+               handle: {
+                  title: 'Security & Cryptographic Tools',
+                  seoTitle: 'Free Client-Side Cryptographic & Security Tools',
+                  description: 'Private security tools running entirely in your browser. Zero server transmission.',
+               } satisfies RouteMeta,
+            },
+            {
+               path: 'password-generator',
+               element: (
+                  <Suspense fallback={<PageLoader />}>
+                     <PasswordGenerator initialMode="random" />
+                  </Suspense>
+               ),
+               handle: getToolMeta('password-generator') satisfies RouteMeta,
+            },
+            {
+               path: 'passphrase-generator',
+               element: (
+                  <Suspense fallback={<PageLoader />}>
+                     <PasswordGenerator initialMode="passphrase" />
+                  </Suspense>
+               ),
+               handle: getToolMeta('passphrase-generator') satisfies RouteMeta,
+            },
+            {
+               path: 'pin-generator',
+               element: (
+                  <Suspense fallback={<PageLoader />}>
+                     <PasswordGenerator initialMode="pin" />
+                  </Suspense>
+               ),
+               handle: getToolMeta('pin-generator') satisfies RouteMeta,
+            },
+            {
+               path: 'password-breach-checker',
+               element: (
+                  <Suspense fallback={<PageLoader />}>
+                     <BreachChecker />
+                  </Suspense>
+               ),
+               handle: getToolMeta('password-breach-checker') satisfies RouteMeta,
+            },
+            {
+               path: 'breach',
+               element: <Navigate to="/password-breach-checker" replace />,
+            },
+            {
+               path: 'tools',
+               element: <Navigate to="/" replace />,
+            },
+            {
+               path: '*',
+               element: <Navigate to="/" replace />,
+            },
+         ],
+      },
+   ],
    {
-      path: '/',
-      Component: RootLayout,
-      children: [
-         {
-            index: true,
-            Component: ToolsList,
-            handle: {
-               title: 'Security & Cryptographic Tools',
-               seoTitle: 'Free Client-Side Cryptographic & Security Tools',
-               description: 'Private security tools running entirely in your browser. Zero server transmission.',
-            } satisfies RouteMeta,
-         },
-         {
-            path: 'password-generator',
-            Component: () => <PasswordGenerator initialMode="random" />,
-            handle: {
-               title: 'Password Generator',
-               seoTitle: 'Random Password Generator — Strong CSPRNG Credentials',
-               description: 'Generate cryptographically random passwords with custom symbols, numbers, and length.',
-            } satisfies RouteMeta,
-         },
-         {
-            path: 'passphrase-generator',
-            Component: () => <PasswordGenerator initialMode="passphrase" />,
-            handle: {
-               title: 'Passphrase Generator',
-               seoTitle: 'Diceware Passphrase Generator — Memorable High-Entropy Passwords',
-               description: 'Create memorable multi-word passphrases using Diceware cryptographic wordlists.',
-            } satisfies RouteMeta,
-         },
-         {
-            path: 'pin-generator',
-            Component: () => <PasswordGenerator initialMode="pin" />,
-            handle: {
-               title: 'PIN Code Generator',
-               seoTitle: 'Secure PIN Code Generator — Hardware-Random Numeric Codes',
-               description: 'Generate secure numeric PIN codes using hardware random number generators.',
-            } satisfies RouteMeta,
-         },
-         {
-            path: 'password-breach-checker',
-            Component: BreachChecker,
-            handle: {
-               title: 'Breach Auditor',
-               seoTitle: 'Password Breach Checker — Zero-Knowledge Leak Auditor',
-               description: 'Audit credentials against 800M+ leaked records using zero-knowledge k-anonymity.',
-            } satisfies RouteMeta,
-         },
-         {
-            path: 'breach',
-            element: <Navigate to="/password-breach-checker" replace />,
-         },
-         {
-            path: 'tools',
-            element: <Navigate to="/" replace />,
-         },
-         {
-            path: '*',
-            element: <Navigate to="/" replace />,
-         },
-      ],
-   },
-], {
-   basename: import.meta.env.BASE_URL,
-});
+      basename: import.meta.env.BASE_URL,
+   }
+);

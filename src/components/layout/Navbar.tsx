@@ -1,29 +1,16 @@
 import { useState, useEffect } from "react";
 import { Link, NavLink, useLocation } from "react-router";
-import {
-   KeyRound,
-   Lock,
-   Fingerprint,
-   Hash,
-   LayoutGrid,
-   Moon,
-   ShieldCheck,
-   Sun,
-   Menu,
-   X,
-   Check,
-} from "lucide-react";
+import { KeyRound, LayoutGrid, Moon, Sun, Menu, X, Check } from "lucide-react";
 import { useTheme } from "../theme-provider";
 import { Button } from "../ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { cn } from "cn";
 
+import { TOOLS } from "@/config/tools";
+
 const NAV_LINKS = [
    { to: "/", label: "All Tools", icon: LayoutGrid, end: true },
-   { to: "/password-generator", label: "Password", icon: Lock },
-   { to: "/passphrase-generator", label: "Passphrase", icon: Fingerprint },
-   { to: "/pin-generator", label: "PIN Code", icon: Hash },
-   { to: "/password-breach-checker", label: "Breach Auditor", icon: ShieldCheck },
+   ...TOOLS.map((t) => ({ to: t.path, label: t.shortName, icon: t.icon, end: false })),
 ];
 
 export function Navbar() {
@@ -31,7 +18,6 @@ export function Navbar() {
    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
    const location = useLocation();
 
-   // Automatically close mobile menu when navigating
    useEffect(() => {
       setMobileMenuOpen(false);
    }, [location.pathname]);
@@ -43,9 +29,7 @@ export function Navbar() {
    return (
       <header className="sticky top-3 sm:top-4 z-50 w-full px-3 sm:px-6">
          <div className="max-w-5xl mx-auto rounded-2xl border border-border/70 bg-background/85 backdrop-blur-xl shadow-lg shadow-black/4 dark:shadow-black/40 ring-1 ring-border/40 transition-all">
-            {/* Top Bar Row */}
             <div className="flex h-14 items-center justify-between px-3 sm:px-5">
-               {/* Clean Brand Mark */}
                <Link
                   to="/"
                   className="flex items-center gap-2.5 group transition-opacity hover:opacity-90 select-none shrink-0"
@@ -59,7 +43,6 @@ export function Navbar() {
                   </span>
                </Link>
 
-               {/* Desktop & Tablet Navigation (hidden on mobile, visible md+) */}
                <nav className="hidden md:flex items-center gap-1">
                   {NAV_LINKS.map((item) => {
                      const Icon = item.icon;
@@ -84,7 +67,6 @@ export function Navbar() {
                   })}
                </nav>
 
-               {/* Right Side: Security Badge, Theme Toggle & Mobile Menu Trigger */}
                <div className="flex items-center gap-1.5 sm:gap-2">
                   <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-medium select-none">
                      <span className="relative flex size-1.5">
@@ -116,7 +98,6 @@ export function Navbar() {
                      </TooltipContent>
                   </Tooltip>
 
-                  {/* Mobile Hamburger / Close Trigger */}
                   <Button
                      variant="ghost"
                      size="icon-sm"
@@ -133,7 +114,6 @@ export function Navbar() {
                </div>
             </div>
 
-            {/* Mobile Expanded Dropdown Menu */}
             {mobileMenuOpen && (
                <div className="md:hidden border-t border-border/50 px-3 py-3 flex flex-col gap-1 animate-in fade-in slide-in-from-top-2 duration-200">
                   {NAV_LINKS.map((item) => {

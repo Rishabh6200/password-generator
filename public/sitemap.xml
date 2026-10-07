@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Homepage / Directory of Tools -->
+  <url>
+    <loc>https://tools.imrishabh.me/</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Cryptographic Password Generator -->
+  <url>
+    <loc>https://tools.imrishabh.me/password-generator</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Diceware Passphrase Generator -->
+  <url>
+    <loc>https://tools.imrishabh.me/passphrase-generator</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Numeric PIN Code Generator -->
+  <url>
+    <loc>https://tools.imrishabh.me/pin-generator</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Zero-Knowledge Breach Auditor -->
+  <url>
+    <loc>https://tools.imrishabh.me/password-breach-checker</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+</urlset>

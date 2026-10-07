@@ -1,59 +1,22 @@
 import { Link } from 'react-router';
 import {
-  Lock,
-  Fingerprint,
-  Hash,
-  ShieldCheck,
   ArrowRight,
   Shield,
   Cpu,
   EyeOff,
-  ChevronDown,
 } from 'lucide-react';
-
-const TOOLS = [
-  {
-    id: 'password-generator',
-    name: 'Password Generator',
-    path: '/password-generator',
-    tag: 'CSPRNG',
-    description: 'Hardware-seeded cryptographic passwords with custom symbols, numbers, and length.',
-    icon: Lock,
-    accent: 'text-sky-500 bg-sky-500/10 border-sky-500/20',
-  },
-  {
-    id: 'passphrase-generator',
-    name: 'Passphrase Generator',
-    path: '/passphrase-generator',
-    tag: 'Diceware',
-    description: 'Human-memorable multi-word phrases using Diceware cryptographic wordlists.',
-    icon: Fingerprint,
-    accent: 'text-indigo-500 bg-indigo-500/10 border-indigo-500/20',
-  },
-  {
-    id: 'pin-generator',
-    name: 'PIN Code Generator',
-    path: '/pin-generator',
-    tag: 'Numeric',
-    description: 'Uniform random 4-digit, 6-digit, and custom-length numeric security PIN codes.',
-    icon: Hash,
-    accent: 'text-amber-500 bg-amber-500/10 border-amber-500/20',
-  },
-  {
-    id: 'password-breach-checker',
-    name: 'Breach Auditor',
-    path: '/password-breach-checker',
-    tag: 'k-Anonymity',
-    description: 'Audit credentials against 800M+ leaked accounts without exposing your plaintext password.',
-    icon: ShieldCheck,
-    accent: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20',
-  },
-];
+import { TOOLS } from '@/config/tools';
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from '@/components/ui/accordion';
 
 export function ToolsList() {
   return (
     <div className="flex flex-col gap-6 w-full animate-in fade-in duration-200">
-      {/* Clean Interactive Command / Directory List (No boxy cards) */}
+      {/* Clean Interactive Command / Directory List */}
       <div className="rounded-2xl border border-border/80 bg-card/60 backdrop-blur-md divide-y divide-border/60 shadow-xs overflow-hidden">
         {TOOLS.map((tool) => {
           const Icon = tool.icon;
@@ -112,43 +75,45 @@ export function ToolsList() {
         </span>
       </div>
 
-      {/* Discreet Collapsible FAQ for SEO */}
-      <details className="group rounded-xl border border-border/50 bg-card/30 p-3.5 transition-all text-xs">
-        <summary className="cursor-pointer font-medium text-muted-foreground hover:text-foreground flex items-center justify-between list-none select-none">
-          <span className="flex items-center gap-2">
-            <Shield className="size-3.5 text-primary" />
-            Security &amp; Cryptography Guide (FAQ)
-          </span>
-          <ChevronDown className="size-3.5 transition-transform duration-200 group-open:rotate-180 text-muted-foreground" />
-        </summary>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3.5 mt-2 border-t border-border/40 text-muted-foreground leading-relaxed text-[11px]">
-          <div>
-            <span className="font-semibold text-foreground">What is cryptographic entropy?</span>
-            <p className="mt-0.5">
-              Entropy measures credential unpredictability. Generated via window.crypto.getRandomValues rather than pseudo-random math.
-            </p>
-          </div>
-          <div>
-            <span className="font-semibold text-foreground">Password vs Passphrase</span>
-            <p className="mt-0.5">
-              Random passwords provide character density for password managers. Passphrases provide equivalent entropy while remaining human-memorable.
-            </p>
-          </div>
-          <div>
-            <span className="font-semibold text-foreground">Zero-Knowledge k-Anonymity</span>
-            <p className="mt-0.5">
-              Breach checks only transmit 5 characters of a SHA-1 hash. Full hashes and passwords never leave your machine.
-            </p>
-          </div>
-          <div>
-            <span className="font-semibold text-foreground">Client-Side Execution</span>
-            <p className="mt-0.5">
-              Zero cookies, zero telemetry, zero server roundtrips. Operates entirely offline.
-            </p>
-          </div>
-        </div>
-      </details>
+      {/* shadcn Accordion FAQ for SEO */}
+      <Accordion className="rounded-2xl border border-border/70 bg-muted/30 dark:bg-muted/15 text-xs overflow-hidden">
+        <AccordionItem value="faq" className="border-b-0 data-open:bg-transparent">
+          <AccordionTrigger className="py-3.5 px-4 sm:px-5 hover:no-underline text-xs sm:text-sm font-semibold text-foreground">
+            <span className="flex items-center gap-2">
+              <Shield className="size-4 text-primary shrink-0" />
+              Security &amp; Cryptography Guide (FAQ)
+            </span>
+          </AccordionTrigger>
+          <AccordionContent className="pt-0 pb-4 px-4 sm:px-5 border-t border-border/50 mt-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-3 text-muted-foreground leading-relaxed text-xs">
+              <div>
+                <span className="font-semibold text-foreground">What is cryptographic entropy?</span>
+                <p className="mt-0.5">
+                  Entropy measures credential unpredictability. Generated via window.crypto.getRandomValues rather than pseudo-random math.
+                </p>
+              </div>
+              <div>
+                <span className="font-semibold text-foreground">Password vs Passphrase</span>
+                <p className="mt-0.5">
+                  Random passwords provide character density for password managers. Passphrases provide equivalent entropy while remaining human-memorable.
+                </p>
+              </div>
+              <div>
+                <span className="font-semibold text-foreground">Zero-Knowledge k-Anonymity</span>
+                <p className="mt-0.5">
+                  Breach checks only transmit 5 characters of a SHA-1 hash. Full hashes and passwords never leave your machine.
+                </p>
+              </div>
+              <div>
+                <span className="font-semibold text-foreground">Client-Side Execution</span>
+                <p className="mt-0.5">
+                  Zero cookies, zero telemetry, zero server roundtrips. Operates entirely offline.
+                </p>
+              </div>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import type { PinOptions } from '../types';
+import { Button } from '@/components/ui/button';
 
 interface PinControlsProps {
   options: PinOptions;
@@ -52,18 +53,14 @@ export function PinControls({ options, onChange }: PinControlsProps) {
         <div className="flex items-center gap-1.5 pt-1 flex-wrap">
           <span className="text-xs text-muted-foreground mr-1">Quick presets:</span>
           {PIN_PRESETS.map((preset) => (
-            <button
+            <Button
               key={preset}
-              type="button"
+              variant={options.length === preset ? "default" : "outline"}
+              size="sm"
               onClick={() => setLength(preset)}
-              className={`px-2.5 py-0.5 rounded-lg text-xs font-mono transition-all cursor-pointer ${
-                options.length === preset
-                  ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
-                  : 'bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground'
-              }`}
             >
               {preset} digits
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -74,18 +71,18 @@ export function PinControls({ options, onChange }: PinControlsProps) {
           Recommended Use Cases
         </span>
 
-        <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
-          <div className="p-2.5 sm:p-3 rounded-xl border border-border bg-card/50 flex flex-col gap-1">
+        <div className="grid grid-cols-2 gap-2.5">
+          <div className="p-3.5 rounded-2xl border border-border/70 bg-muted/30 dark:bg-muted/15 flex flex-col gap-1.5 transition-all">
             <span className="text-xs font-semibold text-foreground">4 Digits</span>
-            <p className="text-[10px] sm:text-[11px] text-muted-foreground leading-relaxed">
-              Standard for ATM cards, SIM locks, and physical locks.
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              Standard for ATM cards, SIM locks, and physical security keypad locks.
             </p>
           </div>
 
-          <div className="p-2.5 sm:p-3 rounded-xl border border-border bg-card/50 flex flex-col gap-1">
+          <div className="p-3.5 rounded-2xl border border-border/70 bg-muted/30 dark:bg-muted/15 flex flex-col gap-1.5 transition-all">
             <span className="text-xs font-semibold text-foreground">6 Digits (Rec.)</span>
-            <p className="text-[10px] sm:text-[11px] text-muted-foreground leading-relaxed">
-              Default for phone lockscreens and 2FA codes.
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              Recommended standard for iOS/Android lockscreens and 2FA authentication.
             </p>
           </div>
         </div>

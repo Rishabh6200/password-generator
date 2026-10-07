@@ -39,22 +39,22 @@ export function PasswordStrength({ strength }: PasswordStrengthProps) {
   const config = getStrengthConfig(strength.score);
 
   return (
-    <div className="flex flex-col gap-2 pt-1">
+    <div className="flex flex-col gap-2 pt-0.5">
       <div className="flex items-center justify-between text-xs">
         <div className="flex items-center gap-1.5 text-muted-foreground font-medium">
-          <ShieldCheck className={`size-3.5 ${config.iconClass}`} />
+          <ShieldCheck className={`size-4 ${config.iconClass}`} />
           <span>Security rating</span>
         </div>
 
-        <Badge variant={config.badgeVariant} className="text-[11px] h-5 px-2 font-medium">
+        <Badge variant={config.badgeVariant} className="text-[11px] h-5 px-2.5 font-medium rounded-full shadow-xs">
           {strength.label}
         </Badge>
       </div>
 
-      <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+      <div className="h-2 w-full bg-muted/80 dark:bg-muted/40 rounded-full overflow-hidden p-0.5 border border-border/50">
         <div
-          className={`h-full rounded-full transition-all duration-300 ${config.barClass}`}
-          style={{ width: `${strength.score}%` }}
+          className={`h-full rounded-full transition-all duration-500 ease-out ${config.barClass}`}
+          style={{ width: `${Math.max(strength.score, 6)}%` }}
         />
       </div>
     </div>

@@ -2,6 +2,7 @@ import { MIN_PASSWORD_LENGTH, MAX_PASSWORD_LENGTH } from '../constants/character
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 interface LengthSliderProps {
    length: number;
@@ -47,17 +48,14 @@ export function LengthSlider({ length, onChange }: LengthSliderProps) {
          <div className="flex items-center gap-1.5 pt-1 flex-wrap">
             <span className="text-xs text-muted-foreground mr-1">Quick presets:</span>
             {[12, 16, 20, 32, 64].map((preset) => (
-               <button
+               <Button
                   key={preset}
-                  type="button"
+                  variant={length === preset ? "default" : "outline"}
+                  size="xs"
                   onClick={() => onChange(preset)}
-                  className={`px-2.5 py-0.5 rounded-lg text-xs font-mono transition-all cursor-pointer ${length === preset
-                        ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
-                        : 'bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground'
-                     }`}
                >
                   {preset}
-               </button>
+               </Button>
             ))}
          </div>
       </div>

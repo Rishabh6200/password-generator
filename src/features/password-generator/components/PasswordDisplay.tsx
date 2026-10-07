@@ -13,6 +13,7 @@ interface PasswordDisplayProps {
   passwordRef: RefObject<HTMLTextAreaElement | null>;
   onCopy: () => void;
   onRegenerate: () => void;
+  tabsActive: string
 }
 
 export function PasswordDisplay({
@@ -23,6 +24,7 @@ export function PasswordDisplay({
   passwordRef,
   onCopy,
   onRegenerate,
+  tabsActive
 }: PasswordDisplayProps) {
   const [spinning, setSpinning] = useState(false);
 
@@ -35,15 +37,15 @@ export function PasswordDisplay({
   return (
     <div className="flex flex-col gap-3.5">
       {/* Hero Password Display Box */}
-      <div className="relative flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 rounded-2xl border border-border/80 bg-muted/30 p-3.5 sm:p-4 transition-all focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/10">
-        {/* Selectable Auto-sizing Password Text (Never clips or shows vertical scrollbar) */}
+      <div className="relative flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 rounded-2xl border border-border/80 bg-muted/40 dark:bg-muted/20 px-4 sm:px-5 py-3.5 sm:py-4 transition-all focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/20 shadow-xs">
+        {/* Selectable Auto-sizing Password Text */}
         <div
-          className="font-mono text-xl sm:text-2xl font-bold tracking-wide text-foreground break-all select-all flex-1 py-1.5 leading-relaxed cursor-text min-h-12 flex items-center"
+          className="font-mono text-xl sm:text-2xl md:text-3xl font-semibold tracking-wider text-foreground break-all select-all flex-1 py-1 leading-relaxed cursor-text min-h-12 flex items-center tabular-nums"
           aria-label="Generated password"
           role="textbox"
           aria-readonly="true"
         >
-          {password || <span className="text-muted-foreground font-normal">Your password will appear here</span>}
+          {password || <span className="text-muted-foreground/60 font-normal text-base sm:text-lg">Your password will appear here</span>}
         </div>
 
         {/* Off-screen textarea for fallback clipboard selection */}
@@ -66,7 +68,7 @@ export function PasswordDisplay({
                   size="icon"
                   onClick={handleRegenerateClick}
                   aria-label="Generate new password"
-                  className="size-9 rounded-xl transition-all active:scale-95"
+                  className="size-10 rounded-xl border-border/70 transition-all hover:bg-muted active:scale-95 cursor-pointer"
                 />
               }
             >
@@ -86,7 +88,7 @@ export function PasswordDisplay({
             size="default"
             onClick={onCopy}
             disabled={!password}
-            className="h-9 rounded-xl px-4 font-semibold shadow-xs transition-all active:scale-98"
+            className="h-10 rounded-xl px-5 font-semibold bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm shadow-primary/25 transition-all active:scale-95 cursor-pointer"
             aria-label="Copy password to clipboard"
           >
             {copied ? (
@@ -105,7 +107,7 @@ export function PasswordDisplay({
       </div>
 
       {/* Dynamic Security Rating Bar */}
-      {password && <PasswordStrength strength={strength} />}
+      {password && tabsActive !== "pin" && <PasswordStrength strength={strength} />}
     </div>
   );
 }

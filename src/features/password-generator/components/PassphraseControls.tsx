@@ -3,6 +3,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import type { PassphraseOptions } from '../types';
+import { Button } from '@/components/ui/button';
 
 interface PassphraseControlsProps {
   options: PassphraseOptions;
@@ -59,18 +60,14 @@ export function PassphraseControls({ options, onChange }: PassphraseControlsProp
           <span className="text-xs font-medium text-muted-foreground">Word Separator:</span>
           <div className="flex gap-2 flex-wrap">
             {SEPARATORS.map((sep) => (
-              <button
+              <Button
                 key={sep.value}
-                type="button"
+                variant={options.separator === sep.value ? "default" : "outline"}
+                size="xs"
                 onClick={() => updateOption('separator', sep.value)}
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition-all cursor-pointer ${
-                  options.separator === sep.value
-                    ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
-                    : 'bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground'
-                }`}
               >
                 {sep.label}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
@@ -82,13 +79,13 @@ export function PassphraseControls({ options, onChange }: PassphraseControlsProp
           Passphrase Options
         </span>
 
-        <div className="grid grid-cols-2 gap-2 sm:gap-2.5">
+        <div className="grid grid-cols-2 gap-2.5">
           <label
             htmlFor="option-capitalize"
-            className={`flex items-center justify-between p-2.5 sm:p-3 rounded-xl border transition-all cursor-pointer select-none ${
+            className={`flex items-center justify-between p-3 sm:p-3.5 rounded-2xl border transition-all cursor-pointer select-none ${
               options.capitalize
-                ? 'border-primary/40 bg-primary/5 shadow-xs'
-                : 'border-border bg-card/50 hover:bg-muted/40 opacity-75 hover:opacity-100'
+                ? 'border-primary/50 bg-primary/8 dark:bg-primary/12 shadow-xs ring-1 ring-primary/25'
+                : 'border-border/70 bg-muted/30 dark:bg-muted/15 hover:border-border hover:bg-muted/50'
             }`}
           >
             <div className="flex flex-col min-w-0 pr-1">
@@ -111,10 +108,10 @@ export function PassphraseControls({ options, onChange }: PassphraseControlsProp
 
           <label
             htmlFor="option-number"
-            className={`flex items-center justify-between p-2.5 sm:p-3 rounded-xl border transition-all cursor-pointer select-none ${
+            className={`flex items-center justify-between p-3 sm:p-3.5 rounded-2xl border transition-all cursor-pointer select-none ${
               options.includeNumber
-                ? 'border-primary/40 bg-primary/5 shadow-xs'
-                : 'border-border bg-card/50 hover:bg-muted/40 opacity-75 hover:opacity-100'
+                ? 'border-primary/50 bg-primary/8 dark:bg-primary/12 shadow-xs ring-1 ring-primary/25'
+                : 'border-border/70 bg-muted/30 dark:bg-muted/15 hover:border-border hover:bg-muted/50'
             }`}
           >
             <div className="flex flex-col min-w-0 pr-1">

@@ -218,30 +218,32 @@ export function PasswordGenerator() {
    }, [mode, password, randomLength, randomOptions, passphraseOptions.wordCount, pinOptions.length]);
 
    return (
-      <div className="w-full flex flex-col gap-6">
-         {/* Mode Switcher Tabs */}
-         <Tabs
-            value={mode}
-            onValueChange={(val) => {
-               if (val) handleModeChange(val as PasswordMode);
-            }}
-            className="w-full"
-         >
-            <TabsList className="w-full">
-               <TabsTrigger value="random">
-                  <Lock className="size-3.5" />
-                  <span>Random</span>
-               </TabsTrigger>
-               <TabsTrigger value="passphrase">
-                  <Fingerprint className="size-3.5" />
-                  <span>Passphrase</span>
-               </TabsTrigger>
-               <TabsTrigger value="pin" >
-                  <Hash className="size-3.5" />
-                  <span>PIN Code</span>
-               </TabsTrigger>
-            </TabsList>
-         </Tabs>
+      <div className="w-full rounded-3xl border border-border/80 bg-card/90 backdrop-blur-xl p-5 sm:p-8 shadow-xl shadow-black/3 dark:shadow-black/50 ring-1 ring-black/4 dark:ring-white/6 flex flex-col gap-7">
+         {/* Centered Mode Switcher Tabs */}
+         <div className="flex justify-center w-full">
+            <Tabs
+               value={mode}
+               onValueChange={(val) => {
+                  if (val) handleModeChange(val as PasswordMode);
+               }}
+               className="w-full max-w-md"
+            >
+               <TabsList className="w-full grid grid-cols-3 p-1 h-10 shadow-xs">
+                  <TabsTrigger value="random" className="gap-2 text-xs sm:text-sm font-medium">
+                     <Lock className="size-3.5" />
+                     <span>Random</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="passphrase" className="gap-2 text-xs sm:text-sm font-medium">
+                     <Fingerprint className="size-3.5" />
+                     <span>Passphrase</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="pin" className="gap-2 text-xs sm:text-sm font-medium">
+                     <Hash className="size-3.5" />
+                     <span>PIN Code</span>
+                  </TabsTrigger>
+               </TabsList>
+            </Tabs>
+         </div>
 
          {/* Shared Hero Output Bar */}
          <PasswordDisplay
@@ -252,33 +254,36 @@ export function PasswordGenerator() {
             passwordRef={passwordRef}
             onCopy={handleCopy}
             onRegenerate={handleRoll}
+            tabsActive={mode}
          />
 
          <div className="h-px bg-border/60" />
 
          {/* Mode-Specific Settings */}
-         {mode === 'random' && (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-               <div className="lg:col-span-5">
-                  <LengthSlider length={randomLength} onChange={handleRandomLengthChange} />
+         <div className="w-full animate-in fade-in duration-300">
+            {mode === 'random' && (
+               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                  <div className="lg:col-span-5">
+                     <LengthSlider length={randomLength} onChange={handleRandomLengthChange} />
+                  </div>
+                  <div className="lg:col-span-7">
+                     <CharacterOptions
+                        options={randomOptions}
+                        onToggle={handleToggleRandomOption}
+                        onToggleAvoidAmbiguous={handleToggleAvoidAmbiguous}
+                     />
+                  </div>
                </div>
-               <div className="lg:col-span-7">
-                  <CharacterOptions
-                     options={randomOptions}
-                     onToggle={handleToggleRandomOption}
-                     onToggleAvoidAmbiguous={handleToggleAvoidAmbiguous}
-                  />
-               </div>
-            </div>
-         )}
+            )}
 
-         {mode === 'passphrase' && (
-            <PassphraseControls options={passphraseOptions} onChange={handlePassphraseChange} />
-         )}
+            {mode === 'passphrase' && (
+               <PassphraseControls options={passphraseOptions} onChange={handlePassphraseChange} />
+            )}
 
-         {mode === 'pin' && (
-            <PinControls options={pinOptions} onChange={handlePinChange} />
-         )}
+            {mode === 'pin' && (
+               <PinControls options={pinOptions} onChange={handlePinChange} />
+            )}
+         </div>
       </div>
    );
 }

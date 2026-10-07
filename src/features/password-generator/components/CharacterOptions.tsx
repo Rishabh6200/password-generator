@@ -43,10 +43,10 @@ export function CharacterOptions({
             <label
               key={key}
               htmlFor={`option-${key}`}
-              className={`flex items-center justify-between p-2.5 sm:p-3 rounded-xl border transition-all cursor-pointer select-none ${
+              className={`flex items-center justify-between p-3 sm:p-3.5 rounded-2xl border transition-all cursor-pointer select-none ${
                 isChecked
-                  ? 'border-primary/40 bg-primary/5 shadow-xs'
-                  : 'border-border bg-card/50 hover:bg-muted/40 opacity-75 hover:opacity-100'
+                  ? 'border-primary/50 bg-primary/8 dark:bg-primary/12 shadow-xs ring-1 ring-primary/25'
+                  : 'border-border/70 bg-muted/30 dark:bg-muted/15 hover:border-border hover:bg-muted/50'
               }`}
             >
               <div className="flex flex-col min-w-0 pr-1">
@@ -72,10 +72,10 @@ export function CharacterOptions({
         {/* Avoid Ambiguous Characters Option */}
         <label
           htmlFor="option-avoid-ambiguous"
-          className={`col-span-2 flex items-center justify-between p-2.5 sm:p-3 rounded-xl border transition-all cursor-pointer select-none ${
+          className={`col-span-2 flex items-center justify-between p-3 sm:p-3.5 rounded-2xl border transition-all cursor-pointer select-none ${
             options.avoidAmbiguous
-              ? 'border-primary/40 bg-primary/5 shadow-xs'
-              : 'border-border bg-card/50 hover:bg-muted/40 opacity-75 hover:opacity-100'
+              ? 'border-primary/50 bg-primary/8 dark:bg-primary/12 shadow-xs ring-1 ring-primary/25'
+              : 'border-border/70 bg-muted/30 dark:bg-muted/15 hover:border-border hover:bg-muted/50'
           }`}
         >
           <div className="flex flex-col min-w-0 pr-2">

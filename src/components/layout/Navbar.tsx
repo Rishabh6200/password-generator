@@ -25,11 +25,11 @@ export function Navbar({ currentTool = "password", onSelectTool }: NavbarProps) 
                <div className="flex flex-col">
                   <div className="flex items-center gap-2">
                      <span className="font-heading text-base font-bold tracking-tight text-foreground">
-                        PasswordFoundry
+                        KeyCraft
                      </span>
                   </div>
                   <span className="hidden sm:inline text-[11px] text-muted-foreground font-medium">
-                     Client-side cryptographic security
+                     Cryptographic & Security Toolkit
                   </span>
                </div>
             </div>

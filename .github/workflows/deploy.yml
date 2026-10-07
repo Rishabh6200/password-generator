@@ -1,0 +1,117 @@
+name: Deploy to Ubuntu Server
+
+on:
+  push:
+    branches:
+      - v2
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-tools-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build project
+        run: pnpm run build
+        env:
+          BASE_PATH: ${{ vars.BASE_PATH || '/' }}
+
+      - name: Validate build output
+        run: test -f dist/index.html
+
+      - name: Configure SSH
+        env:
+          SERVER_SSH_KEY: ${{ secrets.SERVER_SSH_KEY }}
+          SERVER_KNOWN_HOSTS: ${{ secrets.SERVER_KNOWN_HOSTS }}
+        run: |
+          set -eu
+
+          mkdir -p "$HOME/.ssh"
+          chmod 700 "$HOME/.ssh"
+
+          printf '%s\n' "$SERVER_SSH_KEY" > "$HOME/.ssh/deploy_key"
+          chmod 600 "$HOME/.ssh/deploy_key"
+
+          printf '%s\n' "$SERVER_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+
+      - name: Verify SSH connection
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_PORT: ${{ secrets.SERVER_PORT || '22' }}
+        run: |
+          set -eu
+
+          ssh \
+            -i "$HOME/.ssh/deploy_key" \
+            -p "$SERVER_PORT" \
+            -o BatchMode=yes \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            "$SERVER_USER@$SERVER_HOST" \
+            "test -d /var/www/tools.imrishabh.me/dist"
+
+      - name: Deploy to Ubuntu Server
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_PORT: ${{ secrets.SERVER_PORT || '22' }}
+        run: |
+          set -eu
+
+          rsync -az --delete \
+            -e "ssh -i $HOME/.ssh/deploy_key -p $SERVER_PORT -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes" \
+            dist/ \
+            "$SERVER_USER@$SERVER_HOST:/var/www/tools.imrishabh.me/dist/"
+
+      - name: Run optional post-deployment command
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_PORT: ${{ secrets.SERVER_PORT || '22' }}
+          POST_DEPLOY_CMD: ${{ secrets.POST_DEPLOY_CMD }}
+        run: |
+          set -eu
+
+          if [ -n "${POST_DEPLOY_CMD:-}" ]; then
+            ssh \
+              -i "$HOME/.ssh/deploy_key" \
+              -p "$SERVER_PORT" \
+              -o BatchMode=yes \
+              -o IdentitiesOnly=yes \
+              -o StrictHostKeyChecking=yes \
+              "$SERVER_USER@$SERVER_HOST" \
+              "$POST_DEPLOY_CMD"
+          else
+            echo "No post-deployment command configured; skipping."
+          fi
+
+      - name: Clean up SSH keys
+        if: always()
+        run: rm -f "$HOME/.ssh/deploy_key"

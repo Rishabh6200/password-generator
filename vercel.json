@@ -1,0 +1,14 @@
+{
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "https://tools.imrishabh.me/",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "destination": "https://tools.imrishabh.me/:path*",
+      "permanent": true
+    }
+  ]
+}

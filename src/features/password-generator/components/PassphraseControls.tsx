@@ -23,8 +23,6 @@ export function PassphraseControls({ options, onChange }: PassphraseControlsProp
     onChange({ ...options, [key]: value });
   };
 
-  const isPresetSeparator = SEPARATORS.some((s) => s.value === options.separator);
-
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       {/* Word Count Slider */}
@@ -74,7 +72,7 @@ export function PassphraseControls({ options, onChange }: PassphraseControlsProp
           <span>Max: 10</span>
         </div>
 
-        {/* Separator Buttons + Custom Input */}
+        {/* Separator Buttons */}
         <div className="flex flex-col gap-1.5 pt-2">
           <span className="text-xs font-medium text-muted-foreground">Word Separator:</span>
           <div className="flex items-center gap-1.5 flex-wrap">
@@ -88,17 +86,6 @@ export function PassphraseControls({ options, onChange }: PassphraseControlsProp
                 {sep.label}
               </Button>
             ))}
-            <div className="flex items-center gap-1 ml-auto">
-              <span className="text-[11px] text-muted-foreground">Custom:</span>
-              <Input
-                type="text"
-                maxLength={3}
-                value={isPresetSeparator ? '' : options.separator}
-                onChange={(e) => updateOption('separator', e.target.value || '-')}
-                placeholder="e.g. @"
-                className="w-14 h-6 text-xs text-center font-mono px-1"
-              />
-            </div>
           </div>
         </div>
       </div>

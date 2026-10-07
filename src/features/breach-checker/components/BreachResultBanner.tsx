@@ -1,4 +1,5 @@
-import { ShieldAlert, ShieldCheck, AlertTriangle } from 'lucide-react';
+import { Link } from 'react-router';
+import { ShieldAlert, ShieldCheck, AlertTriangle, ArrowRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import type { BreachCheckResult, CheckStatus } from '../types';
 
@@ -81,9 +82,18 @@ export function BreachResultBanner({ status, result, errorMsg }: BreachResultBan
           </span>
         </div>
 
-        <div className="p-3 rounded-xl bg-background/60 border border-destructive/30 text-xs text-foreground/80 leading-relaxed">
-          <p className="font-semibold text-destructive mb-0.5">Security Recommendation:</p>
-          Do not use this password for any account. Automated credential stuffing tools test this password first against accounts worldwide.
+        <div className="p-3.5 rounded-xl bg-background/60 border border-destructive/30 text-xs text-foreground/80 leading-relaxed flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <p className="font-semibold text-destructive mb-0.5">Security Recommendation:</p>
+            Do not use this password for any account. Automated credential stuffing tools test this password first against accounts worldwide.
+          </div>
+          <Link
+            to="/password-generator"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-destructive text-destructive-foreground hover:bg-destructive/90 text-xs font-semibold whitespace-nowrap self-start sm:self-center transition-colors shadow-xs"
+          >
+            <span>Generate Secure Password</span>
+            <ArrowRight className="size-3" />
+          </Link>
         </div>
       </div>
     );

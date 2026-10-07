@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Lock, Fingerprint, Hash } from 'lucide-react';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PasswordDisplay } from './components/PasswordDisplay';
 import { LengthSlider } from './components/LengthSlider';
 import { CharacterOptions } from './components/CharacterOptions';
@@ -30,38 +28,23 @@ const INITIAL_PIN_OPTIONS: PinOptions = {
    length: 6,
 };
 
-const TABS = [
-   {
-      key: 'random',
-      label: 'Random',
-      icon: Lock,
-   },
-   {
-      key: 'passphrase',
-      label: 'Passphrase',
-      icon: Fingerprint,
-   },
-   {
-      key: 'pin',
-      label: 'PIN Code',
-      icon: Hash,
-   },
-]
-
 interface PasswordGeneratorProps {
    onAuditInBreach?: (password: string) => void;
+   initialMode?: PasswordMode;
 }
 
-export function PasswordGenerator({ onAuditInBreach }: PasswordGeneratorProps = {}) {
+export function PasswordGenerator({ onAuditInBreach, initialMode = 'random' }: PasswordGeneratorProps = {}) {
    const navigate = useNavigate();
-   const [mode, setMode] = useState<PasswordMode>('random');
+   const [mode, setMode] = useState<PasswordMode>(initialMode);
    const [randomLength, setRandomLength] = useState<number>(DEFAULT_PASSWORD_LENGTH);
    const [randomOptions, setRandomOptions] = useState(INITIAL_RANDOM_OPTIONS);
    const [passphraseOptions, setPassphraseOptions] = useState<PassphraseOptions>(INITIAL_PASSPHRASE_OPTIONS);
    const [pinOptions, setPinOptions] = useState<PinOptions>(INITIAL_PIN_OPTIONS);
-   const [password, setPassword] = useState<string>(() =>
-      generatePassword({ length: DEFAULT_PASSWORD_LENGTH, ...INITIAL_RANDOM_OPTIONS })
-   );
+   const [password, setPassword] = useState<string>(() => {
+      if (initialMode === 'passphrase') return generatePassphrase(INITIAL_PASSPHRASE_OPTIONS);
+      if (initialMode === 'pin') return generatePin(INITIAL_PIN_OPTIONS);
+      return generatePassword({ length: DEFAULT_PASSWORD_LENGTH, ...INITIAL_RANDOM_OPTIONS });
+   });
    const [copied, setCopied] = useState<boolean>(false);
    const [copyError, setCopyError] = useState<boolean>(false);
 
@@ -72,7 +55,7 @@ export function PasswordGenerator({ onAuditInBreach }: PasswordGeneratorProps = 
       if (onAuditInBreach) {
          onAuditInBreach(targetPwd);
       } else {
-         navigate('/breach', { state: { password: targetPwd } });
+         navigate('/password-breach-checker', { state: { password: targetPwd } });
       }
    }, [onAuditInBreach, navigate]);
 
@@ -91,6 +74,13 @@ export function PasswordGenerator({ onAuditInBreach }: PasswordGeneratorProps = 
    }, [mode, randomLength, randomOptions, passphraseOptions, pinOptions]);
 
    useEffect(() => {
+      if (initialMode && initialMode !== mode) {
+         setMode(initialMode);
+         generateCurrent(initialMode);
+      }
+   }, [initialMode, generateCurrent, mode]);
+
+   useEffect(() => {
       return () => {
          if (copyTimeoutRef.current !== null) {
             window.clearTimeout(copyTimeoutRef.current);
@@ -98,11 +88,7 @@ export function PasswordGenerator({ onAuditInBreach }: PasswordGeneratorProps = 
       };
    }, []);
 
-   const handleModeChange = (newMode: PasswordMode) => {
-      setMode(newMode);
-      generateCurrent(newMode);
-      
-   };
+
 
    const handleRoll = useCallback(() => {
       generateCurrent();
@@ -201,29 +187,7 @@ export function PasswordGenerator({ onAuditInBreach }: PasswordGeneratorProps = 
    }, [mode, password, randomLength, randomOptions, passphraseOptions.wordCount, pinOptions.length]);
 
    return (
-      <div className="w-full rounded-3xl border border-border/80 bg-card/90 backdrop-blur-xl p-5 sm:p-8 shadow-xl shadow-black/3 dark:shadow-black/50 ring-1 ring-black/4 dark:ring-white/6 flex flex-col gap-7">
-         <div className="flex justify-center w-full">
-            <Tabs
-               value={mode}
-               onValueChange={(val) => {
-                  if (val) handleModeChange(val as PasswordMode);
-               }}
-               className="w-full max-w-md"
-            >
-               <TabsList className="w-full grid grid-cols-3 p-1 h-10 shadow-xs">
-                  {TABS.map((tab) => (
-                     <TabsTrigger
-                        value={tab.key}
-                        className="gap-2 text-xs sm:text-sm font-medium"
-                     >
-                        <tab.icon className="size-3.5" />
-                        <span>{tab.label}</span>
-                     </TabsTrigger>
-                  ))}
-               </TabsList>
-            </Tabs>
-         </div>
-
+      <div className="w-full rounded-3xl border border-border/80 bg-card/90 backdrop-blur-xl p-5 sm:p-8 shadow-xl shadow-black/3 dark:shadow-black/50 ring-1 ring-black/4 dark:ring-white/6 flex flex-col gap-6">
          <PasswordDisplay
             password={password}
             copied={copied}

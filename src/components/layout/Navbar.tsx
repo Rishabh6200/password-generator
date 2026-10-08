@@ -1,26 +1,25 @@
-import { useState, useEffect } from "react";
-import { Link, NavLink, useLocation } from "react-router";
-import { KeyRound, LayoutGrid, Moon, Sun, Menu, X, Check } from "lucide-react";
+import { useState } from "react";
+import { Link, useLocation } from "react-router";
+import { KeyRound, LayoutGrid, Moon, Sun, Menu, X } from "lucide-react";
 import { useTheme } from "../theme-provider";
 import { Button } from "../ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
-import { cn } from "cn";
-
-import { TOOLS } from "@/config/tools";
-
-const NAV_LINKS = [
-   { to: "/", label: "All Tools", icon: LayoutGrid, end: true },
-   ...TOOLS.map((t) => ({ to: t.path, label: t.shortName, icon: t.icon, end: false })),
-];
+import { NAV_CATEGORIES } from "./nav-config";
+import { DesktopNavLink } from "./DesktopNavLink";
+import { DesktopNavCategory } from "./DesktopNavCategory";
+import { MobileNavLink } from "./MobileNavLink";
 
 export function Navbar() {
    const { theme, setTheme } = useTheme();
    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
    const location = useLocation();
 
-   useEffect(() => {
+   // Auto-close mobile menu on route change
+   const [prevPathname, setPrevPathname] = useState(location.pathname);
+   if (prevPathname !== location.pathname) {
+      setPrevPathname(location.pathname);
       setMobileMenuOpen(false);
-   }, [location.pathname]);
+   }
 
    const toggleTheme = () => {
       setTheme(theme === "dark" ? "light" : "dark");
@@ -30,6 +29,7 @@ export function Navbar() {
       <header className="sticky top-3 sm:top-4 z-50 w-full px-3 sm:px-6">
          <div className="max-w-5xl mx-auto rounded-2xl border border-border/70 bg-background/85 backdrop-blur-xl shadow-lg shadow-black/4 dark:shadow-black/40 ring-1 ring-border/40 transition-all">
             <div className="flex h-14 items-center justify-between px-3 sm:px-5">
+               {/* Brand / Logo */}
                <Link
                   to="/"
                   className="flex items-center gap-2.5 group transition-opacity hover:opacity-90 select-none shrink-0"
@@ -43,30 +43,15 @@ export function Navbar() {
                   </span>
                </Link>
 
-               <nav className="hidden md:flex items-center gap-1">
-                  {NAV_LINKS.map((item) => {
-                     const Icon = item.icon;
-                     return (
-                        <NavLink
-                           key={item.to}
-                           to={item.to}
-                           end={item.end}
-                           className={({ isActive }) =>
-                              cn(
-                                 "flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer select-none whitespace-nowrap",
-                                 isActive
-                                    ? "bg-primary/10 text-primary font-semibold ring-1 ring-primary/25 shadow-xs"
-                                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                              )
-                           }
-                        >
-                           <Icon className="size-3.5" />
-                           <span>{item.label}</span>
-                        </NavLink>
-                     );
-                  })}
+               {/* Desktop Navigation */}
+               <nav className="hidden md:flex items-center gap-1.5 sm:gap-2">
+                  <DesktopNavLink to="/" label="All Tools" icon={LayoutGrid} end />
+                  {NAV_CATEGORIES.map((category) => (
+                     <DesktopNavCategory key={category.id} category={category} />
+                  ))}
                </nav>
 
+               {/* Right side status & controls */}
                <div className="flex items-center gap-1.5 sm:gap-2">
                   <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-medium select-none">
                      <span className="relative flex size-1.5">
@@ -78,6 +63,7 @@ export function Navbar() {
 
                   <div className="h-4 w-px bg-border/60 hidden sm:block" />
 
+                  {/* Theme toggle */}
                   <Tooltip>
                      <TooltipTrigger
                         render={
@@ -98,6 +84,7 @@ export function Navbar() {
                      </TooltipContent>
                   </Tooltip>
 
+                  {/* Mobile hamburger button */}
                   <Button
                      variant="ghost"
                      size="icon-sm"
@@ -105,44 +92,38 @@ export function Navbar() {
                      aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
                      className="md:hidden size-8 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/80 cursor-pointer transition-all ml-0.5"
                   >
-                     {mobileMenuOpen ? (
-                        <X className="size-4.5" />
-                     ) : (
-                        <Menu className="size-4.5" />
-                     )}
+                     {mobileMenuOpen ? <X className="size-4.5" /> : <Menu className="size-4.5" />}
                   </Button>
                </div>
             </div>
 
+            {/* Mobile Navigation Drawer */}
             {mobileMenuOpen && (
-               <div className="md:hidden border-t border-border/50 px-3 py-3 flex flex-col gap-1 animate-in fade-in slide-in-from-top-2 duration-200">
-                  {NAV_LINKS.map((item) => {
-                     const Icon = item.icon;
-                     return (
-                        <NavLink
-                           key={item.to}
-                           to={item.to}
-                           end={item.end}
-                           onClick={() => setMobileMenuOpen(false)}
-                           className={({ isActive }) =>
-                              cn(
-                                 "flex items-center justify-between px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all select-none cursor-pointer",
-                                 isActive
-                                    ? "bg-primary/10 text-primary font-semibold ring-1 ring-primary/25"
-                                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                              )
-                           }
-                        >
-                           <div className="flex items-center gap-2.5">
-                              <div className="size-7 rounded-lg bg-muted/60 border border-border/50 flex items-center justify-center text-foreground/80">
-                                 <Icon className="size-3.5" />
-                              </div>
-                              <span>{item.label}</span>
-                           </div>
-                           <Check className="size-3.5 opacity-0 data-[active=true]:opacity-100 text-primary" />
-                        </NavLink>
-                     );
-                  })}
+               <div className="md:hidden border-t border-border/50 px-3 py-3 flex flex-col gap-2.5 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <MobileNavLink
+                     to="/"
+                     label="All Tools"
+                     icon={LayoutGrid}
+                     onSelect={() => setMobileMenuOpen(false)}
+                  />
+
+                  {NAV_CATEGORIES.map((cat) => (
+                     <div key={cat.id} className="pt-1 flex flex-col gap-1">
+                        <div className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/80">
+                           {cat.menuTitle}
+                        </div>
+                        {cat.tools.map((tool) => (
+                           <MobileNavLink
+                              key={tool.id}
+                              to={tool.path}
+                              label={tool.name}
+                              icon={tool.icon}
+                              tag={tool.tag}
+                              onSelect={() => setMobileMenuOpen(false)}
+                           />
+                        ))}
+                     </div>
+                  ))}
                </div>
             )}
          </div>

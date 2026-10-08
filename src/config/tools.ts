@@ -8,6 +8,7 @@ export interface ToolConfig {
   tag: string;
   description: string;
   seoTitle: string;
+  category?: 'Generators' | 'Security & Audit';
   icon: LucideIcon;
   accent: string;
   iconBg: string;
@@ -19,6 +20,7 @@ export const TOOLS: ToolConfig[] = [
     name: 'Password Generator',
     shortName: 'Password',
     path: '/password-generator',
+    category: 'Generators',
     tag: 'CSPRNG',
     description: 'Hardware-seeded cryptographic passwords with custom symbols, numbers, and length.',
     seoTitle: 'Random Password Generator — Strong CSPRNG Credentials',
@@ -31,6 +33,7 @@ export const TOOLS: ToolConfig[] = [
     name: 'Passphrase Generator',
     shortName: 'Passphrase',
     path: '/passphrase-generator',
+    category: 'Generators',
     tag: 'Diceware',
     description: 'Human-memorable multi-word phrases using Diceware cryptographic wordlists.',
     seoTitle: 'Diceware Passphrase Generator — Memorable High-Entropy Passwords',
@@ -43,6 +46,7 @@ export const TOOLS: ToolConfig[] = [
     name: 'PIN Code Generator',
     shortName: 'PIN Code',
     path: '/pin-generator',
+    category: 'Generators',
     tag: 'Numeric',
     description: 'Uniform random 4-digit, 6-digit, and custom-length numeric security PIN codes.',
     seoTitle: 'Secure PIN Code Generator — Hardware-Random Numeric Codes',
@@ -55,6 +59,7 @@ export const TOOLS: ToolConfig[] = [
     name: 'Breach Auditor',
     shortName: 'Breach Auditor',
     path: '/password-breach-checker',
+    category: 'Security & Audit',
     tag: 'k-Anonymity',
     description: 'Audit credentials against 800M+ leaked accounts without exposing your plaintext password.',
     seoTitle: 'Password Breach Checker — Zero-Knowledge Leak Auditor',
